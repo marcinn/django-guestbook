@@ -21,7 +21,7 @@ class EntryPostBadRequest(http.HttpResponseBadRequest):
         if settings.DEBUG:
             self.content = render_to_string("guestbook/400-debug.html", {"why": why})
 
-def post_entry(request, next=None):
+def post_entry(request, next=None, form_class=None):
     """
     Post a entry.
 
@@ -46,7 +46,8 @@ def post_entry(request, next=None):
               data.get("preview", None) is not None
 
     # Construct the entry form
-    form = guestbook.get_form()(data=data)
+    form_class = form_class or guestbook.get_form()
+    form = form_class(data=data)
 
     # Check security information
     if form.security_errors():
